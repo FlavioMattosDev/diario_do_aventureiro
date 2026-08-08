@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diário do Aventureiro — Conquistas Minecraft</title>
+<meta name="description" content="Acompanhe sua jornada no Minecraft: da primeira árvore derrubada até a derrota do Ender Dragon.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --grass:#5fb83a;
+  --grass-dark:#3f8a26;
+  --emerald:#3ec97a;
+  --emerald-glow:#7cffb5;
+  --gold:#f4c542;
+  --gold-dark:#b8862a;
+  --diamond:#4fd8e0;
+  --netherite:#4a4147;
+  --redstone:#e0473c;
+  --obsidian-violet:#8b6cf1;
+
+  --bg-0:#141019;
+  --bg-1:#1c1622;
+  --bg-2:#241c2c;
+  --panel:#231a29;
+  --panel-border: rgba(244,197,66,0.14);
+  --ink:#f2ecdd;
+  --ink-dim:#c9c0ae;
+  --ink-faint:#8d8476;
+
+  --font-display:'Press Start 2P', monospace;
+  --font-mono:'VT323', monospace;
+  --font-body:'Inter', sans-serif;
+
+  --radius:10px;
+  --shadow-deep: 0 20px 50px -20px rgba(0,0,0,0.6);
+}
+
+html[data-theme="light"]{
+  --bg-0:#efe4c4;
+  --bg-1:#f4ecd4;
+  --bg-2:#faf3de;
+  --panel:#fbf5e3;
+  --panel-border: rgba(139,101,32,0.22);
+  --ink:#3a2f1e;
+  --ink-dim:#5c4d33;
+  --ink-faint:#8a7a56;
+  --shadow-deep: 0 20px 45px -22px rgba(80,60,20,0.35);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(95,184,58,0.10), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(139,108,241,0.10), transparent 45%),
+    var(--bg-0);
+  color:var(--ink);
+  min-height:100vh;
+  transition:background .4s ease, color .4s ease;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Textura sutil tipo "terra" */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  opacity:.05;
+  background-image:
+    repeating-linear-gradient(0deg, #000 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px);
+  background-size:4px 4px;
+  mix-blend-mode:overlay;
+  z-index:0;
+}
+
+::selection{ background:var(--gold); color:#1c1622; }
+
+a{color:inherit;}
+button{font-family:inherit;}
+
+/* Foco visível para acessibilidade */
+:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:2px;
+  border-radius:4px;
+}
+
+.sr-only{
+  position:absolute; width:1px;height:1px;
+  padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+.skip-link{
+  position:absolute; left:-9999px; top:0;
+  background:var(--gold); color:#1c1622;
+  padding:10px 18px; z-index:999; font-weight:700;
+  border-radius:0 0 8px 0;
+}
+.skip-link:focus{ left:0; }
+
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--grass-dark); border-radius:6px;}
+
+/* ============ LAYOUT SHELL ============ */
+.wrap{ position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:0 20px 80px; }
+
+/* ============ TOP BAR ============ */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter: blur(14px) saturate(140%);
+  background: color-mix(in srgb, var(--bg-1) 78%, transparent);
+  border-bottom:1px solid var(--panel-border);
+}
+.topbar-inner{
+  max-width:1280px; margin:0 auto; padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-icon{
+  width:38px; height:38px; border-radius:8px;
+  background:linear-gradient(145deg, var(--grass), var(--grass-dark));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.25), inset 3px 3px 0 rgba(255,255,255,.15);
+  font-size:16px; color:#fff;
+  flex-shrink:0;
+}
+.brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+.brand-title{ font-family:var(--font-display); font-size:11px; letter-spacing:.5px; color:var(--gold); }
+.brand-sub{ font-size:11.5px; color:var(--ink-faint); margin-top:3px; }
+
+.top-actions{ display:flex; align-items:center; gap:10px; }
+
+.icon-btn{
+  width:40px; height:40px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--panel); border:1px solid var(--panel-border);
+  color:var(--ink); cursor:pointer; font-size:15px;
+  transition:transform .15s ease, background .2s ease, box-shadow .2s ease;
+}
+.icon-btn:hover{ transform:translateY(-2px); background:var(--bg-2); box-shadow:var(--shadow-deep); }
+.icon-btn:active{ transform:translateY(0px) scale(.96); }
+
+/* ============ HERO ============ */
+.hero{
+  padding:46px 0 30px;
+  position:relative;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap:28px;
+  align-items:stretch;
+}
+@media (max-width: 880px){
+  .hero-grid{ grid-template-columns:1fr; }
+}
+
+.hero-card{
+  background:linear-gradient(160deg, var(--panel), color-mix(in srgb, var(--panel) 70%, black));
+  border:1px solid var(--panel-border);
+  border-radius:18px;
+  padding:34px 32px;
+  box-shadow:var(--shadow-deep);
+  position:relative;
+  overflow:hidden;
+}
+.hero-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(500px 200px at 90% -10%, rgba(95,184,58,.18), transparent),
+    radial-gradient(400px 200px at -10% 110%, rgba(139,108,241,.14), transparent);
+  pointer-events:none;
+}
+
+.eyebrow{
+  font-family:var(--font-mono); font-size:19px; letter-spacing:1.5px;
+  color:var(--emerald-glow); text-transform:uppercase;
+  display:flex; align-items:center; gap:8px; margin-bottom:10px;
+}
+.eyebrow i{ font-size:14px; }
+
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(22px, 3.4vw, 34px);
+  line-height:1.5;
+  margin:0 0 14px;
+  color:var(--ink);
+  text-shadow: 3px 3px 0 rgba(0,0,0,.25);
+}
+.hero-title .accent{ color:var(--gold); }
+
+.hero-desc{
+  color:var(--ink-dim); font-size:15.5px; line-height:1.65;
+  max-width:52ch; margin:0 0 26px;
+}
+
+.hero-stats{
+  display:flex; gap:22px; flex-wrap:wrap; margin-top:8px;
+}
+.hstat{ min-width:110px; }
+.hstat .num{ font-family:var(--font-mono); font-size:36px; line-height:1; color:var(--gold); }
+.hstat .lbl{ font-size:12px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.6px; margin-top:2px;}
+
+/* XP-style progress bar */
+.xpbar-wrap{ margin-top:26px; }
+.xpbar-label{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-size:12.5px; color:var(--ink-faint); margin-bottom:8px;
+  text-transform:uppercase; letter-spacing:.5px;
+}
+.xpbar-label strong{ color:var(--ink); font-size:14px; }
+.xpbar{
+  height:22px; border-radius:999px;
+  background: color-mix(in srgb, black 55%, var(--bg-0));
+  border:2px solid rgba(0,0,0,.4);
+  overflow:hidden;
+  position:relative;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,.5);
+}
+.xpbar-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--grass-dark), var(--grass) 55%, var(--emerald-glow));
+  border-radius:999px;
+  width:0%;
+  transition: width .9s cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+.xpbar-fill::after{
+  content:"";
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(45deg, rgba(255,255,255,.16) 0 10px, transparent 10px 20px);
+  animation: xpstripe 1.4s linear infinite;
+}
+@keyframes xpstripe{ from{background-position:0 0;} to{background-position:28px 0;} }
+
+/* Mini tab progress rail in hero right card */
+.rail-card{
+  background:var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:18px;
+  padding:24px;
+  box-shadow:var(--shadow-deep);
+  display:flex; flex-direction:column; gap:14px;
+}
+.rail-title{
+  font-family:var(--font-display); font-size:11px; color:var(--ink-faint);
+  letter-spacing:.5px; margin-bottom:4px;
+}
+.rail-item{
+  display:flex; align-items:center; gap:12px;
+  padding:10px 12px; border-radius:10px;
+  background:color-mix(in srgb, var(--bg-1) 60%, transparent);
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:background .18s ease, border-color .18s ease, transform .12s ease;
+}
+.rail-item:hover{ background:var(--bg-2); border-color:var(--panel-border); transform:translateX(3px); }
+.rail-ico{
+  width:34px; height:34px; border-radius:8px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:14px; color:#fff;
+}
+.rail-info{ flex:1; min-width:0; }
+.rail-info .name{ font-size:13.5px; font-weight:700; }
+.rail-info .count{ font-size:11.5px; color:var(--ink-faint); margin-top:1px; }
+.rail-bar{ width:100%; height:6px; border-radius:99px; background:rgba(0,0,0,.35); margin-top:6px; overflow:hidden; }
+.rail-bar > span{ display:block; height:100%; border-radius:99px; transition:width .7s ease; }
+
+/* ============ NAV TABS ============ */
+.nav-tabs{
+  position:sticky; top:70px; z-index:40;
+  display:flex; gap:8px; overflow-x:auto;
+  padding:14px 0; margin-bottom:6px;
+  scrollbar-width:none;
+}
+.nav-tabs::-webkit-scrollbar{ display:none; }
+.tab-btn{
+  flex-shrink:0;
+  display:flex; align-items:center; gap:8px;
+  padding:11px 18px; border-radius:12px;
+  background:var(--panel); border:1px solid var(--panel-border);
+  color:var(--ink-dim); font-weight:700; font-size:13.5px;
+  cursor:pointer; white-space:nowrap;
+  transition: all .18s ease;
+}
+.tab-btn i{ font-size:13px; }
+.tab-btn:hover{ transform:translateY(-2px); color:var(--ink); }
+.tab-btn.active{
+  color:#151018;
+  background:linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-color:transparent;
+  box-shadow:0 8px 20px -8px rgba(244,197,66,.55);
+}
+.tab-badge{
+  font-family:var(--font-mono); font-size:13px;
+  background:rgba(0,0,0,.22); padding:1px 8px; border-radius:99px;
+}
+.tab-btn.active .tab-badge{ background:rgba(0,0,0,.18); }
+
+/* ============ SEARCH / FILTER BAR ============ */
+.toolbar{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  margin:8px 0 24px;
+}
+.search-box{
+  flex:1; min-width:220px;
+  display:flex; align-items:center; gap:10px;
+  background:var(--panel); border:1px solid var(--panel-border);
+  border-radius:12px; padding:10px 16px;
+}
+.search-box i{ color:var(--ink-faint); }
+.search-box input{
+  border:none; background:transparent; outline:none; color:var(--ink);
+  font-size:14.5px; width:100%; font-family:var(--font-body);
+}
+.search-box input::placeholder{ color:var(--ink-faint); }
+
+.filter-chip{
+  display:flex; align-items:center; gap:7px;
+  padding:9px 15px; border-radius:99px;
+  background:var(--panel); border:1px solid var(--panel-border);
+  color:var(--ink-dim); font-size:13px; font-weight:600; cursor:pointer;
+  transition:all .15s ease;
+}
+.filter-chip:hover{ color:var(--ink); }
+.filter-chip.active{
+  background:color-mix(in srgb, var(--emerald) 22%, var(--panel));
+  border-color: var(--emerald);
+  color:var(--emerald-glow);
+}
+
+.category-reset{
+  display:flex; align-items:center; gap:7px;
+  padding:9px 15px; border-radius:99px;
+  background:transparent; border:1px dashed var(--redstone);
+  color:var(--redstone); font-size:12.5px; font-weight:700; cursor:pointer;
+  transition:all .15s ease; margin-left:auto;
+}
+.category-reset:hover{ background:rgba(224,71,60,.12); }
+
+/* ============ SECTION HEADERS ============ */
+.section-block{ margin-bottom:44px; }
+.section-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; margin-bottom:16px; flex-wrap:wrap;
+}
+.section-titling{ display:flex; align-items:center; gap:12px; }
+.section-ico{
+  width:44px; height:44px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px; color:#fff; flex-shrink:0;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.22), inset 3px 3px 0 rgba(255,255,255,.14);
+}
+.section-h2{ font-family:var(--font-display); font-size:15px; margin:0 0 4px; }
+.section-p{ font-size:13px; color:var(--ink-faint); margin:0; max-width:60ch; }
+
+.mini-progress{ display:flex; align-items:center; gap:10px; min-width:170px; }
+.mini-progress .bar{ flex:1; height:9px; border-radius:99px; background:rgba(0,0,0,.3); overflow:hidden; }
+.mini-progress .bar > span{ display:block; height:100%; border-radius:99px; }
+.mini-progress .txt{ font-family:var(--font-mono); font-size:16px; color:var(--ink-dim); white-space:nowrap; }
+
+/* ============ ACHIEVEMENT GRID ============ */
+.ach-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+  gap:14px;
+}
+
+.ach-card{
+  position:relative;
+  background:var(--panel);
+  border:1px solid var(--panel-border);
+  border-radius:14px;
+  padding:16px 16px 16px 16px;
+  display:flex; gap:14px;
+  cursor:pointer;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  overflow:hidden;
+}
+.ach-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-deep); border-color:color-mix(in srgb, var(--gold) 40%, var(--panel-border)); }
+.ach-card:focus-within{ border-color:var(--gold); }
+
+.ach-card.done{
+  background:linear-gradient(135deg, color-mix(in srgb, var(--emerald) 12%, var(--panel)), var(--panel));
+  border-color:color-mix(in srgb, var(--emerald) 45%, var(--panel-border));
+}
+.ach-card.done::before{
+  content:"";
+  position:absolute; top:-40%; left:-10%;
+  width:60%; height:200%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,.10), transparent);
+  transform:rotate(20deg);
+  pointer-events:none;
+}
+
+/* frame variants echoing advancement icon frames */
+.ach-icon{
+  width:52px; height:52px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:21px; color:#fff;
+  position:relative;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,.25), inset 3px 3px 0 rgba(255,255,255,.16);
+}
+.ach-card[data-frame="goal"] .ach-icon{ border-radius:50%; }
+.ach-card[data-frame="challenge"] .ach-icon{ clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+
+.ach-body{ flex:1; min-width:0; }
+.ach-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.ach-name{ font-size:14.5px; font-weight:800; margin:0 0 4px; line-height:1.3; }
+.ach-card.done .ach-name{ color:var(--emerald-glow); }
+.ach-desc{ font-size:12.5px; color:var(--ink-faint); line-height:1.5; margin:0; }
+
+.ach-meta{
+  display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap;
+}
+.ach-type-tag{
+  font-size:10px; text-transform:uppercase; letter-spacing:.5px; font-weight:800;
+  padding:3px 8px; border-radius:5px;
+}
+.ach-type-tag.normal{ background:rgba(95,184,58,.18); color:var(--emerald-glow); }
+.ach-type-tag.goal{ background:rgba(79,216,224,.16); color:var(--diamond); }
+.ach-type-tag.challenge{ background:rgba(139,108,241,.18); color:var(--obsidian-violet); }
+
+.ach-xp{ font-family:var(--font-mono); font-size:14px; color:var(--gold); }
+.ach-date{ font-size:10.5px; color:var(--ink-faint); font-style:italic; margin-left:auto; }
+
+.ach-check{
+  flex-shrink:0; align-self:center;
+  width:30px; height:30px; border-radius:8px;
+  border:2px solid var(--panel-border);
+  background:transparent;
+  display:flex; align-items:center; justify-content:center;
+  color:transparent; cursor:pointer; font-size:14px;
+  transition:all .18s ease;
+}
+.ach-check:hover{ border-color:var(--emerald); }
+.ach-card.done .ach-check{
+  background:linear-gradient(145deg, var(--emerald), var(--grass-dark));
+  border-color:transparent; color:#0e1a10;
+}
+
+/* celebration pulse */
+@keyframes pop-cel{
+  0%{ transform:scale(1); }
+  35%{ transform:scale(1.06); box-shadow:0 0 0 8px rgba(62,201,122,.18); }
+  100%{ transform:scale(1); box-shadow:none; }
+}
+.ach-card.celebrate{ animation: pop-cel .55s ease; }
+
+@keyframes sparkle-burst{
+  0%{ opacity:1; transform:translate(0,0) scale(0.6) rotate(0deg); }
+  100%{ opacity:0; transform:translate(var(--tx), var(--ty)) scale(1.1) rotate(180deg); }
+}
+.sparkle{
+  position:absolute; pointer-events:none;
+  width:8px;height:8px; border-radius:2px;
+  background:var(--gold);
+  animation: sparkle-burst .75s ease-out forwards;
+}
+
+/* ============ EMPTY STATE ============ */
+.empty-state{
+  text-align:center; padding:60px 20px; color:var(--ink-faint);
+}
+.empty-state i{ font-size:34px; margin-bottom:12px; color:var(--ink-faint); }
+.empty-state p{ font-size:14px; }
+
+/* ============ TOASTS ============ */
+.toast-stack{
+  position:fixed; top:18px; right:18px; z-index:200;
+  display:flex; flex-direction:column; gap:10px;
+  width:min(340px, calc(100vw - 36px));
+}
+.toast{
+  display:flex; align-items:center; gap:12px;
+  background:linear-gradient(135deg, #2a2117, #1c1610);
+  border:2px solid var(--gold);
+  border-radius:10px; padding:12px 14px;
+  box-shadow:0 12px 30px -10px rgba(0,0,0,.6);
+  animation: toast-in .35s cubic-bezier(.22,1,.36,1);
+  color:#f2ecdd;
+}
+.toast.leaving{ animation: toast-out .35s ease forwards; }
+@keyframes toast-in{ from{ transform:translateX(120%); opacity:0; } to{ transform:translateX(0); opacity:1; } }
+@keyframes toast-out{ from{ transform:translateX(0); opacity:1; } to{ transform:translateX(120%); opacity:0; } }
+.toast-ico{
+  width:36px; height:36px; border-radius:8px; flex-shrink:0;
+  background:linear-gradient(145deg, var(--gold), var(--gold-dark));
+  display:flex; align-items:center; justify-content:center; color:#241a08; font-size:15px;
+}
+.toast-text .t1{ font-family:var(--font-display); font-size:9px; color:var(--gold); margin-bottom:3px; letter-spacing:.5px;}
+.toast-text .t2{ font-size:13px; font-weight:700; line-height:1.3; }
+
+/* ============ MODAL ============ */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.6);
+  backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  z-index:300; padding:20px;
+}
+.modal-card{
+  background:var(--bg-1); border:1px solid var(--panel-border);
+  border-radius:16px; max-width:420px; width:100%;
+  padding:26px; box-shadow:var(--shadow-deep);
+  text-align:center;
+}
+.modal-card i{ font-size:30px; color:var(--redstone); margin-bottom:12px; }
+.modal-card h3{ font-family:var(--font-display); font-size:13px; margin:0 0 12px; }
+.modal-card p{ color:var(--ink-dim); font-size:14px; line-height:1.6; margin:0 0 22px; }
+.modal-actions{ display:flex; gap:10px; justify-content:center; }
+.btn{
+  padding:11px 20px; border-radius:9px; border:none; cursor:pointer;
+  font-weight:700; font-size:13.5px; transition:all .15s ease;
+}
+.btn-danger{ background:var(--redstone); color:#fff; }
+.btn-danger:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+.btn-ghost{ background:var(--panel); color:var(--ink); border:1px solid var(--panel-border); }
+.btn-ghost:hover{ background:var(--bg-2); }
+
+/* ============ FOOTER ============ */
+.site-footer{
+  margin-top:60px; padding-top:28px;
+  border-top:1px solid var(--panel-border);
+  text-align:center; color:var(--ink-faint); font-size:12.5px; line-height:1.8;
+}
+.site-footer a{ color:var(--emerald-glow); text-decoration:none; }
+.site-footer a:hover{ text-decoration:underline; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001s !important; transition-duration:.001s !important; }
+}
+
+@media (max-width:600px){
+  .hero-card, .rail-card{ padding:22px 18px; }
+  .hero-stats{ gap:14px; }
+  .nav-tabs{ top:64px; }
+}
+</style>
+</head>
+<body data-theme-root>
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
+<div id="app">
+  <!-- ============ TOPBAR ============ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true"><i class="fa-solid fa-cubes-stacked"></i></div>
+        <div class="brand-text">
+          <span class="brand-title">DIÁRIO DO AVENTUREIRO</span>
+          <span class="brand-sub">Conquistas &amp; Objetivos Minecraft</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+          <i class="fa-solid fa-moon" id="themeIcon" aria-hidden="true"></i>
+        </button>
+        <button class="icon-btn" id="resetAllBtn" aria-label="Resetar todo o progresso" title="Resetar tudo">
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="wrap">
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-label="Resumo do progresso">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="eyebrow"><i class="fa-solid fa-map"></i> SUA JORNADA COMEÇA AQUI</div>
+          <h1 class="hero-title">Do primeiro <span class="accent">galho de madeira</span> até derrotar o <span class="accent">Ender Dragon</span></h1>
+          <p class="hero-desc">Marque cada objetivo conforme avança no seu mundo. Todo progresso é salvo automaticamente no seu navegador — com data e hora de cada conquista — e continua disponível na próxima visita.</p>
+
+          <div class="hero-stats">
+            <div class="hstat"><div class="num" id="statDone">0</div><div class="lbl">Concluídas</div></div>
+            <div class="hstat"><div class="num" id="statTotal">0</div><div class="lbl">Objetivos totais</div></div>
+            <div class="hstat"><div class="num" id="statPercent">0%</div><div class="lbl">Progresso geral</div></div>
+            <div class="hstat"><div class="num" id="statXP">0</div><div class="lbl">XP acumulado</div></div>
+          </div>
+
+          <div class="xpbar-wrap">
+            <div class="xpbar-label"><span>Barra de experiência geral</span><strong id="xpbarPercentLabel">0%</strong></div>
+            <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso geral de conquistas" id="heroBarWrap">
+              <div class="xpbar-fill" id="heroBarFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rail-card" aria-label="Progresso por categoria">
+          <div class="rail-title">PROGRESSO POR CATEGORIA</div>
+          <div id="categoryRail"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NAV TABS ============ -->
+    <nav class="nav-tabs" id="navTabs" aria-label="Categorias de objetivos"></nav>
+
+    <!-- ============ TOOLBAR ============ -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <label for="searchInput" class="sr-only">Buscar objetivo</label>
+        <input type="text" id="searchInput" placeholder="Buscar objetivo, ex: diamante, portal, dragão...">
+      </div>
+      <button class="filter-chip active" data-filter="all" id="filterAll" aria-pressed="true">Todos</button>
+      <button class="filter-chip" data-filter="pending" id="filterPending" aria-pressed="false">Pendentes</button>
+      <button class="filter-chip" data-filter="done" id="filterDone" aria-pressed="false">Concluídos</button>
+      <button class="category-reset" id="resetCategoryBtn">
+        <i class="fa-solid fa-trash-can"></i> Resetar categoria atual
+      </button>
+    </div>
+
+    <!-- ============ CONTENT SECTIONS ============ -->
+    <div id="contentRoot"></div>
+
+    <footer class="site-footer">
+      <p>Conteúdo de conquistas baseado nas <a href="https://minecraft.wiki/w/Advancement" target="_blank" rel="noopener">Advancements oficiais da Minecraft Wiki</a>. Site não-oficial, feito por fãs. Minecraft é uma marca da Mojang Studios.</p>
+      <p>Seu progresso fica salvo apenas neste navegador (localStorage) — nenhum dado é enviado a servidores.</p>
+    </footer>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+/* ==========================================================================
+   BASE DE DADOS — Objetivos e Conquistas Minecraft
+   Estrutura: CATEGORIES (metadados de exibição) + ACHIEVEMENTS (itens)
+   type: "normal" | "goal" | "challenge" (espelha os frames oficiais do jogo)
+   tier: "iniciante" | "intermediario" | "avancado" | "especial"
+   ========================================================================== */
+
+const CATEGORIES = [
+  { id:"sobrevivencia",  name:"Sobrevivência Inicial", icon:"fa-solid fa-tree",        color:"#5fb83a", tier:"iniciante",
+    desc:"Os primeiros passos: madeira, ferramentas básicas e um teto sobre a cabeça." },
+  { id:"recursos",       name:"Recursos & Ferramentas", icon:"fa-solid fa-hammer",      color:"#8d99ae", tier:"iniciante",
+    desc:"Minerar, forjar e evoluir do osso ao diamante." },
+  { id:"agricultura",    name:"Alimentação & Agricultura", icon:"fa-solid fa-wheat-awn", color:"#c9a227", tier:"iniciante",
+    desc:"Plantações, criação de animais e a arte de nunca passar fome." },
+  { id:"exploracao",     name:"Exploração", icon:"fa-solid fa-compass",                 color:"#4fd8e0", tier:"intermediario",
+    desc:"Cavernas, biomas, vilarejos, templos e masmorras esquecidas." },
+  { id:"combate",        name:"Combate", icon:"fa-solid fa-khanda",                     color:"#e0473c", tier:"intermediario",
+    desc:"Mobs derrotados, equipamentos encantados e o domínio das poções." },
+  { id:"nether",         name:"O Nether", icon:"fa-solid fa-fire",                      color:"#ff6a3d", tier:"avancado",
+    desc:"Cruze o portal, sobreviva ao inferno e derrote o Wither." },
+  { id:"end",            name:"O End", icon:"fa-solid fa-dragon",                       color:"#8b6cf1", tier:"avancado",
+    desc:"A fortaleza, o Ender Dragon e as cidades flutuantes do End." },
+  { id:"especiais",      name:"Conquistas Especiais", icon:"fa-solid fa-star",          color:"#f4c542", tier:"especial",
+    desc:"Advancements oficiais completas — os feitos mais raros do jogo." },
+];
+
+/* type: normal (verde), goal (diamante/oval), challenge (roxo/fancy)
+   xp: valor exibido apenas como referência de "peso" do objetivo (não é XP real do jogo, exceto quando indicado)
+*/
+const ACHIEVEMENTS = [
+
+  /* ===================== 1. SOBREVIVÊNCIA INICIAL ===================== */
+  { id:"surv-01", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-tree", xp:5,
+    name:"Lenhador Novato", desc:"Colete seu primeiro bloco de madeira (log) de qualquer árvore." },
+  { id:"surv-02", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-table-cells", xp:5,
+    name:"Mesa Posta", desc:"Crafte sua primeira bancada de trabalho (crafting table)." },
+  { id:"surv-03", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-hammer", xp:5,
+    name:"Ferramentas de Madeira", desc:"Crafte picareta, machado, pá e enxada de madeira." },
+  { id:"surv-04", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-fire-flame-simple", xp:8,
+    name:"Primeira Fogueira", desc:"Construa uma fornalha (furnace) com 8 blocos de pedra/cobblestone." },
+  { id:"surv-05", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-mountain", xp:6,
+    name:"Idade da Pedra", desc:"Minere seu primeiro bloco de cobblestone com a picareta de madeira." },
+  { id:"surv-06", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-screwdriver-wrench", xp:8,
+    name:"Upgrade de Ferramentas", desc:"Crafte um conjunto completo de ferramentas de pedra." },
+  { id:"surv-07", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-house-chimney", xp:10,
+    name:"Teto Sobre a Cabeça", desc:"Construa um abrigo simples que proteja você da noite e de mobs." },
+  { id:"surv-08", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-bed", xp:6,
+    name:"Hora de Dormir", desc:"Crafte uma cama e defina seu ponto de respawn." },
+  { id:"surv-09", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-shield", xp:8,
+    name:"Primeira Defesa", desc:"Crafte uma espada e sobreviva à sua primeira noite." },
+  { id:"surv-10", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-box-archive", xp:5,
+    name:"Organização Básica", desc:"Crafte e posicione seu primeiro baú (chest)." },
+  { id:"surv-11", cat:"sobrevivencia", type:"normal", icon:"fa-solid fa-torch", xp:5,
+    name:"Que Se Faça Luz", desc:"Crafte tochas usando carvão (ou charcoal) e um graveto." },
+  { id:"surv-12", cat:"sobrevivencia", type:"goal", icon:"fa-solid fa-warehouse", xp:15,
+    name:"Base Estabelecida", desc:"Tenha um abrigo com cama, baú, fornalha e área iluminada — sua primeira base." },
+
+  /* ===================== 2. RECURSOS & FERRAMENTAS ===================== */
+  { id:"rec-01", cat:"recursos", type:"normal", icon:"fa-solid fa-gem", xp:8,
+    name:"Veio de Carvão", desc:"Minere seu primeiro bloco de minério de carvão." },
+  { id:"rec-02", cat:"recursos", type:"normal", icon:"fa-solid fa-cubes", xp:10,
+    name:"Minério de Ferro", desc:"Minere minério de ferro com uma picareta de pedra ou superior." },
+  { id:"rec-03", cat:"recursos", type:"goal", icon:"fa-solid fa-fire-burner", xp:10,
+    name:"Fundição de Metal", desc:"Funda minério de ferro em uma fornalha e obtenha um lingote de ferro." },
+  { id:"rec-04", cat:"recursos", type:"normal", icon:"fa-solid fa-pickaxe", xp:12,
+    name:"Isn't It Iron Pick", desc:"Crafte uma picareta de ferro (Advancement oficial: story/iron_tools)." },
+  { id:"rec-05", cat:"recursos", type:"normal", icon:"fa-solid fa-vest", xp:15,
+    name:"Suit Up", desc:"Tenha ao menos uma peça de armadura de ferro (Advancement oficial: story/obtain_armor)." },
+  { id:"rec-06", cat:"recursos", type:"goal", icon:"fa-solid fa-shield-halved", xp:20,
+    name:"Armadura Completa de Ferro", desc:"Crafte capacete, peitoral, calças e botas de ferro." },
+  { id:"rec-07", cat:"recursos", type:"normal", icon:"fa-solid fa-coins", xp:8,
+    name:"Ouro Reluzente", desc:"Minere e funda seu primeiro lingote de ouro." },
+  { id:"rec-08", cat:"recursos", type:"normal", icon:"fa-solid fa-gem", xp:22,
+    name:"Diamonds!", desc:"Obtenha seu primeiro diamante (Advancement oficial: story/mine_diamond)." },
+  { id:"rec-09", cat:"recursos", type:"normal", icon:"fa-solid fa-shirt", xp:28,
+    name:"Cover Me with Diamonds", desc:"Tenha uma peça de armadura de diamante (Advancement oficial: story/shiny_gear)." },
+  { id:"rec-10", cat:"recursos", type:"goal", icon:"fa-solid fa-user-shield", xp:35,
+    name:"Armadura Completa de Diamante", desc:"Crafte o conjunto completo de armadura de diamante." },
+  { id:"rec-11", cat:"recursos", type:"normal", icon:"fa-solid fa-cube", xp:18,
+    name:"Ice Bucket Challenge", desc:"Obtenha um bloco de obsidiana (Advancement oficial: story/form_obsidian)." },
+  { id:"rec-12", cat:"recursos", type:"normal", icon:"fa-solid fa-book-sparkles", xp:20,
+    name:"Enchanter", desc:"Encante um item em uma mesa de encantamento (Advancement oficial: story/enchant_item)." },
+  { id:"rec-13", cat:"recursos", type:"normal", icon:"fa-solid fa-flask", xp:14,
+    name:"Local Brewery", desc:"Prepare sua primeira poção em um suporte de poções." },
+  { id:"rec-14", cat:"recursos", type:"goal", icon:"fa-solid fa-industry", xp:25,
+    name:"Linha de Produção", desc:"Tenha fornos, mesa de encantamento, bigorna e suporte de poções em uma mesma base." },
+  { id:"rec-15", cat:"recursos", type:"normal", icon:"fa-solid fa-anvil", xp:12,
+    name:"Reparo e Combinação", desc:"Use uma bigorna para reparar ou combinar itens/encantamentos." },
+
+  /* ===================== 3. ALIMENTAÇÃO & AGRICULTURA ===================== */
+  { id:"agr-01", cat:"agricultura", type:"normal", icon:"fa-solid fa-wheat-awn", xp:6,
+    name:"Primeira Colheita", desc:"Plante e colha trigo pela primeira vez." },
+  { id:"agr-02", cat:"agricultura", type:"normal", icon:"fa-solid fa-carrot", xp:6,
+    name:"Hortaliças", desc:"Plante e colha cenouras." },
+  { id:"agr-03", cat:"agricultura", type:"normal", icon:"fa-solid fa-seedling", xp:6,
+    name:"Tubérculos", desc:"Plante e colha batatas." },
+  { id:"agr-04", cat:"agricultura", type:"normal", icon:"fa-solid fa-bread-slice", xp:8,
+    name:"Padeiro", desc:"Crafte pão a partir de trigo colhido." },
+  { id:"agr-05", cat:"agricultura", type:"normal", icon:"fa-solid fa-cow", xp:10,
+    name:"Fazendeiro Iniciante", desc:"Cerque e domestique (crie) seu primeiro animal, como vaca ou ovelha." },
+  { id:"agr-06", cat:"agricultura", type:"normal", icon:"fa-solid fa-heart", xp:8,
+    name:"Amor Animal", desc:"Alimente dois animais para que se reproduzam e nasça um filhote." },
+  { id:"agr-07", cat:"agricultura", type:"normal", icon:"fa-solid fa-drumstick-bite", xp:8,
+    name:"Bem Passado", desc:"Cozinhe carne crua em uma fornalha." },
+  { id:"agr-08", cat:"agricultura", type:"normal", icon:"fa-solid fa-egg", xp:6,
+    name:"Galinheiro", desc:"Colete ovos de galinhas para criar mais galinhas." },
+  { id:"agr-09", cat:"agricultura", type:"normal", icon:"fa-solid fa-fish", xp:10,
+    name:"Pescador", desc:"Pesque um peixe usando uma vara de pescar." },
+  { id:"agr-10", cat:"agricultura", type:"goal", icon:"fa-solid fa-warehouse", xp:20,
+    name:"Fazenda Automatizada", desc:"Construa uma fazenda com sistema de irrigação e colheita eficiente." },
+  { id:"agr-11", cat:"agricultura", type:"normal", icon:"fa-solid fa-jar", xp:8,
+    name:"Doce Reserva", desc:"Colete mel de uma colmeia sem irritar as abelhas." },
+  { id:"agr-12", cat:"agricultura", type:"challenge", icon:"fa-solid fa-utensils", xp:40,
+    name:"Balanced Diet", desc:"Coma todos os tipos de alimento diferentes do jogo (Advancement oficial: husbandry/balanced_diet)." },
+  { id:"agr-13", cat:"agricultura", type:"challenge", icon:"fa-solid fa-paw", xp:45,
+    name:"Two by Two", desc:"Reproduza um casal de cada espécie criável do jogo (Advancement oficial: husbandry/bred_all_animals)." },
+  { id:"agr-14", cat:"agricultura", type:"goal", icon:"fa-solid fa-piggy-bank", xp:15,
+    name:"Estábulo Completo", desc:"Tenha ao menos 3 espécies diferentes de animais em cercados na sua base." },
+
+  /* ===================== 4. EXPLORAÇÃO ===================== */
+  { id:"exp-01", cat:"exploracao", type:"normal", icon:"fa-solid fa-torch", xp:8,
+    name:"Espeleólogo", desc:"Explore sua primeira caverna com pelo menos 5 tochas colocadas." },
+  { id:"exp-02", cat:"exploracao", type:"normal", icon:"fa-solid fa-mountain-sun", xp:10,
+    name:"Turista de Biomas", desc:"Visite ao menos 5 biomas diferentes no Overworld." },
+  { id:"exp-03", cat:"exploracao", type:"normal", icon:"fa-solid fa-house-flag", xp:12,
+    name:"Encontro com a Civilização", desc:"Encontre e visite um vilarejo (village) pela primeira vez." },
+  { id:"exp-04", cat:"exploracao", type:"normal", icon:"fa-solid fa-handshake", xp:8,
+    name:"What a Deal!", desc:"Faça sua primeira troca comercial com um aldeão (villager)." },
+  { id:"exp-05", cat:"exploracao", type:"normal", icon:"fa-solid fa-landmark", xp:14,
+    name:"Templo Perdido", desc:"Encontre um templo do deserto ou da selva." },
+  { id:"exp-06", cat:"exploracao", type:"goal", icon:"fa-solid fa-skull", xp:16,
+    name:"Masmorra Descoberta", desc:"Encontre uma masmorra (dungeon) com spawner de monstros." },
+  { id:"exp-07", cat:"exploracao", type:"normal", icon:"fa-solid fa-water", xp:12,
+    name:"Naufrágio", desc:"Explore um naufrágio (shipwreck) ou ruína oceânica." },
+  { id:"exp-08", cat:"exploracao", type:"normal", icon:"fa-solid fa-map-location-dot", xp:10,
+    name:"Cartógrafo", desc:"Crafte e use um mapa para explorar o terreno ao redor." },
+  { id:"exp-09", cat:"exploracao", type:"normal", icon:"fa-solid fa-compass", xp:8,
+    name:"Norte Verdadeiro", desc:"Crafte e use uma bússola para se orientar." },
+  { id:"exp-10", cat:"exploracao", type:"goal", icon:"fa-solid fa-gem", xp:18,
+    name:"Mineração Profunda", desc:"Explore o Deepslate e as camadas mais profundas do mundo." },
+  { id:"exp-11", cat:"exploracao", type:"normal", icon:"fa-solid fa-cave", xp:14,
+    name:"Cavernas de Musgo", desc:"Encontre uma Lush Cave e colete suas plantas exclusivas." },
+  { id:"exp-12", cat:"exploracao", type:"challenge", icon:"fa-solid fa-earth-americas", xp:60,
+    name:"Adventuring Time", desc:"Descubra todos os biomas do Overworld (Advancement oficial: adventure/adventuring_time)." },
+  { id:"exp-13", cat:"exploracao", type:"normal", icon:"fa-solid fa-igloo", xp:12,
+    name:"Refúgio Gelado", desc:"Encontre um iglu ou vilarejo em bioma nevado." },
+  { id:"exp-14", cat:"exploracao", type:"goal", icon:"fa-solid fa-mountain", xp:16,
+    name:"Topo do Mundo", desc:"Escale até o pico mais alto de uma montanha (Jagged/Frozen Peaks)." },
+
+  /* ===================== 5. COMBATE ===================== */
+  { id:"com-01", cat:"combate", type:"normal", icon:"fa-solid fa-khanda", xp:6,
+    name:"Adventure", desc:"Mate qualquer mob ou seja morto por um ser vivo (Advancement oficial: adventure/root)." },
+  { id:"com-02", cat:"combate", type:"normal", icon:"fa-solid fa-skull-crossbones", xp:10,
+    name:"Monster Hunter", desc:"Mate um monstro hostil de qualquer tipo (Advancement oficial: adventure/kill_a_mob)." },
+  { id:"com-03", cat:"combate", type:"challenge", icon:"fa-solid fa-swords", xp:55,
+    name:"Monsters Hunted", desc:"Mate ao menos um de cada monstro hostil do jogo (Advancement oficial: adventure/kill_all_mobs)." },
+  { id:"com-04", cat:"combate", type:"normal", icon:"fa-solid fa-bullseye", xp:8,
+    name:"Take Aim", desc:"Atire em um mob com arco e flecha (Advancement oficial: adventure/shoot_arrow)." },
+  { id:"com-05", cat:"combate", type:"normal", icon:"fa-solid fa-shield", xp:14,
+    name:"Not Today, Thank You", desc:"Bloqueie um projétil com um escudo (Advancement oficial: story/deflect_arrow)." },
+  { id:"com-06", cat:"combate", type:"goal", icon:"fa-solid fa-heart-crack", xp:20,
+    name:"Postmortal", desc:"Use um Totem of Undying para escapar da morte (Advancement oficial: adventure/totem_of_undying)." },
+  { id:"com-07", cat:"combate", type:"normal", icon:"fa-solid fa-crossbow", xp:10,
+    name:"Ol' Betsy", desc:"Atire com uma besta (crossbow) (Advancement oficial: adventure/ol_betsy)." },
+  { id:"com-08", cat:"combate", type:"challenge", icon:"fa-solid fa-burst", xp:35,
+    name:"Arbalistic", desc:"Mate cinco mobs únicos com um único tiro de besta (Advancement oficial: adventure/arbalistic)." },
+  { id:"com-09", cat:"combate", type:"normal", icon:"fa-solid fa-trident", xp:14,
+    name:"A Throwaway Joke", desc:"Acerte um mob com um tridente arremessado (Advancement oficial: adventure/throw_trident)." },
+  { id:"com-10", cat:"combate", type:"challenge", icon:"fa-solid fa-flag", xp:30,
+    name:"Voluntary Exile", desc:"Derrote um capitão de invasão (raid captain) — cuidado com as consequências (Advancement oficial: adventure/voluntary_exile)." },
+  { id:"com-11", cat:"combate", type:"challenge", icon:"fa-solid fa-people-group", xp:40,
+    name:"Hero of the Village", desc:"Defenda com sucesso um vilarejo de uma invasão (raid) (Advancement oficial: adventure/hero_of_the_village)." },
+  { id:"com-12", cat:"combate", type:"normal", icon:"fa-solid fa-flask-vial", xp:10,
+    name:"Poção de Combate", desc:"Aplique uma poção ofensiva (dano, veneno etc.) em um inimigo." },
+  { id:"com-13", cat:"combate", type:"goal", icon:"fa-solid fa-shield-halved", xp:22,
+    name:"Sob Encanto", desc:"Use uma peça de armadura ou arma encantada em combate real pela primeira vez." },
+  { id:"com-14", cat:"combate", type:"challenge", icon:"fa-solid fa-martini-glass-citrus", xp:60,
+    name:"A Furious Cocktail", desc:"Tenha todos os 17 efeitos de poção positivos/negativos ativos ao mesmo tempo (Advancement oficial: nether/all_potions)." },
+  { id:"com-15", cat:"combate", type:"normal", icon:"fa-solid fa-hand-fist", xp:8,
+    name:"Vingança do Zumbi", desc:"Sobreviva a um ataque de zumbis durante a noite sem fugir da área." },
+
+  /* ===================== 6. O NETHER ===================== */
+  { id:"net-01", cat:"nether", type:"normal", icon:"fa-solid fa-fire", xp:15,
+    name:"We Need to Go Deeper", desc:"Construa, acenda e entre em um portal do Nether (Advancement oficial: story/enter_the_nether)." },
+  { id:"net-02", cat:"nether", type:"normal", icon:"fa-solid fa-fire", xp:8,
+    name:"Bring Summer Clothes", desc:"Entre na dimensão do Nether (Advancement oficial: nether/root)." },
+  { id:"net-03", cat:"nether", type:"goal", icon:"fa-solid fa-shapes", xp:18,
+    name:"Those Were the Days", desc:"Entre em um Bastion Remnant (Advancement oficial: nether/find_bastion)." },
+  { id:"net-04", cat:"nether", type:"normal", icon:"fa-solid fa-box-open", xp:16,
+    name:"War Pigs", desc:"Saqueie um baú em um Bastion Remnant (Advancement oficial: nether/loot_bastion)." },
+  { id:"net-05", cat:"nether", type:"normal", icon:"fa-solid fa-fire-flame-curved", xp:16,
+    name:"A Terrible Fortress", desc:"Abra caminho até uma Nether Fortress (Advancement oficial: nether/find_fortress)." },
+  { id:"net-06", cat:"nether", type:"normal", icon:"fa-solid fa-bone", xp:18,
+    name:"Spooky Scary Skeleton", desc:"Obtenha o crânio de um Wither Skeleton (Advancement oficial: nether/get_wither_skull)." },
+  { id:"net-07", cat:"nether", type:"normal", icon:"fa-solid fa-fire-flame-simple", xp:14,
+    name:"Into Fire", desc:"Obtenha uma vareta de Blaze de um Blaze (Advancement oficial: nether/obtain_blaze_rod)." },
+  { id:"net-08", cat:"nether", type:"normal", icon:"fa-solid fa-diamond", xp:22,
+    name:"Hidden in the Depths", desc:"Obtenha Ancient Debris (Advancement oficial: nether/obtain_ancient_debris)." },
+  { id:"net-09", cat:"nether", type:"challenge", icon:"fa-solid fa-user-shield", xp:45,
+    name:"Cover Me in Debris", desc:"Tenha um conjunto completo de armadura de Netherite (Advancement oficial: nether/netherite_armor)." },
+  { id:"net-10", cat:"nether", type:"challenge", icon:"fa-solid fa-fire", xp:30,
+    name:"Return to Sender", desc:"Destrua um Ghast refletindo sua própria bola de fogo (Advancement oficial: nether/return_to_sender)." },
+  { id:"net-11", cat:"nether", type:"challenge", icon:"fa-solid fa-ghost", xp:35,
+    name:"Uneasy Alliance", desc:"Resgate um Ghast até o Overworld... e depois mate-o (Advancement oficial: nether/uneasy_alliance)." },
+  { id:"net-12", cat:"nether", type:"normal", icon:"fa-solid fa-person-walking", xp:10,
+    name:"This Boat Has Legs", desc:"Monte em um Strider usando warped fungus on a stick (Advancement oficial: nether/ride_strider)." },
+  { id:"net-13", cat:"nether", type:"challenge", icon:"fa-solid fa-map", xp:50,
+    name:"Subspace Bubble", desc:"Use o Nether para viajar 7 km no Overworld (Advancement oficial: nether/fast_travel)." },
+  { id:"net-14", cat:"nether", type:"challenge", icon:"fa-solid fa-mountain-sun", xp:40,
+    name:"Hot Tourist Destinations", desc:"Explore todos os 5 biomas do Nether (Advancement oficial: nether/explore_nether)." },
+  { id:"net-15", cat:"nether", type:"normal", icon:"fa-solid fa-skull", xp:35,
+    name:"Withering Heights", desc:"Invoque o Wither (Advancement oficial: nether/summon_wither)." },
+  { id:"net-16", cat:"nether", type:"goal", icon:"fa-solid fa-fire-flame-curved", xp:45,
+    name:"Derrote o Wither", desc:"Elimine o Wither e obtenha um Nether Star." },
+  { id:"net-17", cat:"nether", type:"normal", icon:"fa-solid fa-tower-observation", xp:30,
+    name:"Bring Home the Beacon", desc:"Construa e ative um Beacon (Advancement oficial: nether/create_beacon)." },
+  { id:"net-18", cat:"nether", type:"goal", icon:"fa-solid fa-broadcast-tower", xp:40,
+    name:"Beaconator", desc:"Traga um Beacon à potência máxima com pirâmide de tamanho 4 (Advancement oficial: nether/create_full_beacon)." },
+  { id:"net-19", cat:"nether", type:"normal", icon:"fa-solid fa-battery-full", xp:14,
+    name:"Not Quite Nine Lives", desc:"Carregue um Respawn Anchor até o máximo (Advancement oficial: nether/charge_respawn_anchor)." },
+
+  /* ===================== 7. O END ===================== */
+  { id:"end-01", cat:"end", type:"normal", icon:"fa-solid fa-eye", xp:14,
+    name:"Eye Spy", desc:"Siga um Eye of Ender até encontrar uma Stronghold (Advancement oficial: story/follow_ender_eye)." },
+  { id:"end-02", cat:"end", type:"normal", icon:"fa-solid fa-dungeon", xp:16,
+    name:"Fortaleza Encontrada", desc:"Localize e explore uma Stronghold pela primeira vez." },
+  { id:"end-03", cat:"end", type:"normal", icon:"fa-solid fa-door-open", xp:20,
+    name:"The End?", desc:"Entre no End Portal e chegue à dimensão do End (Advancement oficial: story/enter_the_end)." },
+  { id:"end-04", cat:"end", type:"goal", icon:"fa-solid fa-dragon", xp:80,
+    name:"Free the End", desc:"Derrote o Ender Dragon (Advancement oficial: end/kill_dragon)." },
+  { id:"end-05", cat:"end", type:"goal", icon:"fa-solid fa-egg", xp:25,
+    name:"The Next Generation", desc:"Segure o Dragon Egg no inventário (Advancement oficial: end/dragon_egg)." },
+  { id:"end-06", cat:"end", type:"normal", icon:"fa-solid fa-circle-nodes", xp:18,
+    name:"Remote Getaway", desc:"Entre em um End Gateway para escapar da ilha central (Advancement oficial: end/enter_end_gateway)." },
+  { id:"end-07", cat:"end", type:"goal", icon:"fa-solid fa-arrows-rotate", xp:35,
+    name:"The End... Again...", desc:"Reinvoque o Ender Dragon usando End Crystals (Advancement oficial: end/respawn_dragon)." },
+  { id:"end-08", cat:"end", type:"goal", icon:"fa-solid fa-wind", xp:20,
+    name:"You Need a Mint", desc:"Colete Dragon's Breath em uma garrafa de vidro (Advancement oficial: end/dragon_breath)." },
+  { id:"end-09", cat:"end", type:"normal", icon:"fa-solid fa-city", xp:22,
+    name:"The City at the End of the Game", desc:"Entre em uma End City (Advancement oficial: end/find_end_city)." },
+  { id:"end-10", cat:"end", type:"goal", icon:"fa-solid fa-feather", xp:30,
+    name:"Sky's the Limit", desc:"Encontre um par de Elytra em uma End City (Advancement oficial: end/elytra)." },
+  { id:"end-11", cat:"end", type:"challenge", icon:"fa-solid fa-up-long", xp:35,
+    name:"Great View From Up Here", desc:"Levite 50 blocos para cima pelos ataques de um Shulker (Advancement oficial: end/levitate)." },
+  { id:"end-12", cat:"end", type:"goal", icon:"fa-solid fa-shield-cat", xp:28,
+    name:"Casco de Shulker", desc:"Derrote um Shulker e obtenha seu Shulker Shell." },
+  { id:"end-13", cat:"end", type:"goal", icon:"fa-solid fa-plane", xp:32,
+    name:"Voo Livre", desc:"Use uma Elytra para voar pela primeira vez com sucesso." },
+
+  /* ===================== 8. CONQUISTAS ESPECIAIS (Advancements oficiais adicionais) ===================== */
+  { id:"esp-01", cat:"especiais", type:"normal", icon:"fa-solid fa-seedling", xp:10,
+    name:"Minecraft", desc:"Tenha uma bancada de trabalho no inventário — a raiz de toda a jornada (Advancement oficial: story/root)." },
+  { id:"esp-02", cat:"especiais", type:"normal", icon:"fa-solid fa-pickaxe", xp:8,
+    name:"Stone Age", desc:"Minere pedra (cobblestone, blackstone ou cobbled deepslate) com sua picareta nova (Advancement oficial: story/mine_stone)." },
+  { id:"esp-03", cat:"especiais", type:"normal", icon:"fa-solid fa-bucket", xp:16,
+    name:"Hot Stuff", desc:"Encha um balde com lava (Advancement oficial: story/lava_bucket)." },
+  { id:"esp-04", cat:"especiais", type:"goal", icon:"fa-solid fa-egg", xp:30,
+    name:"Zombie Doctor", desc:"Enfraqueça e cure um Zombie Villager com maçã dourada (Advancement oficial: story/cure_zombie_villager)." },
+  { id:"esp-05", cat:"especiais", type:"normal", icon:"fa-solid fa-lightbulb", xp:12,
+    name:"Country Lode, Take Me Home", desc:"Use uma bússola em um Lodestone (Advancement oficial: adventure/use_lodestone)." },
+  { id:"esp-06", cat:"especiais", type:"normal", icon:"fa-solid fa-binoculars", xp:10,
+    name:"Is It a Bird?", desc:"Observe um papagaio através de um Spyglass (Advancement oficial: adventure/spyglass_at_parrot)." },
+  { id:"esp-07", cat:"especiais", type:"normal", icon:"fa-solid fa-hand-holding-droplet", xp:10,
+    name:"Sticky Situation", desc:"Pule em um bloco de mel para amortecer sua queda (Advancement oficial: adventure/honey_block_slide)." },
+  { id:"esp-08", cat:"especiais", type:"challenge", icon:"fa-solid fa-parachute-box", xp:50,
+    name:"Caves & Cliffs", desc:"Caia livremente do topo do mundo até o fundo e sobreviva (Advancement oficial: adventure/fall_from_world_height)." },
+  { id:"esp-09", cat:"especiais", type:"normal", icon:"fa-solid fa-brush", xp:14,
+    name:"Respecting the Remnants", desc:"Escove um bloco suspeito para obter um Pottery Sherd (Advancement oficial: adventure/salvage_sherd)." },
+  { id:"esp-10", cat:"especiais", type:"normal", icon:"fa-solid fa-vault", xp:12,
+    name:"Sneak 100", desc:"Agache-se perto de um Sculk Sensor ou Warden para evitar detecção (Advancement oficial: adventure/avoid_vibration)." },
+  { id:"esp-11", cat:"especiais", type:"normal", icon:"fa-solid fa-bed", xp:8,
+    name:"Sweet Dreams", desc:"Deite-se em uma cama para alterar seu ponto de respawn (Advancement oficial: adventure/sleep_in_bed)." },
+  { id:"esp-12", cat:"especiais", type:"normal", icon:"fa-solid fa-user-robot", xp:14,
+    name:"Hired Help", desc:"Invoque um Iron Golem para ajudar a defender um vilarejo (Advancement oficial: adventure/summon_iron_golem)." },
+  { id:"esp-13", cat:"especiais", type:"normal", icon:"fa-solid fa-mountain-city", xp:16,
+    name:"Star Trader", desc:"Comercie com um aldeão no limite máximo de altura do mundo (Advancement oficial: adventure/trade_at_world_height)." },
+  { id:"esp-14", cat:"especiais", type:"challenge", icon:"fa-solid fa-shirt", xp:45,
+    name:"Smithing with Style", desc:"Aplique todos os smithing templates exclusivos de armor trim (Advancement oficial: adventure/trim_with_all_exclusive_armor_patterns)." },
+  { id:"esp-15", cat:"especiais", type:"normal", icon:"fa-solid fa-pot-food", xp:12,
+    name:"Careful Restoration", desc:"Faça um Decorated Pot usando 4 Pottery Sherds (Advancement oficial: adventure/craft_decorated_pot_using_only_sherds)." },
+  { id:"esp-16", cat:"especiais", type:"challenge", icon:"fa-solid fa-crow", xp:40,
+    name:"Two Birds, One Arrow", desc:"Mate dois Phantoms com uma única flecha perfurante (Advancement oficial: adventure/two_birds_one_arrow)." },
+  { id:"esp-17", cat:"especiais", type:"normal", icon:"fa-solid fa-crossbow", xp:16,
+    name:"Who's the Pillager Now?", desc:"Mate um Pillager com um tiro de besta — dê o troco (Advancement oficial: adventure/whos_the_pillager_now)." },
+  { id:"esp-18", cat:"especiais", type:"normal", icon:"fa-solid fa-music", xp:10,
+    name:"Sound of Music", desc:"Toque um disco de música em um jukebox dentro de um bioma Meadow (Advancement oficial: adventure/play_jukebox_in_meadows)." },
+  { id:"esp-19", cat:"especiais", type:"normal", icon:"fa-solid fa-shoe-prints", xp:10,
+    name:"Light as a Rabbit", desc:"Ande sobre neve em pó sem afundar, usando botas de couro (Advancement oficial: adventure/walk_on_powder_snow_with_leather_boots)." },
+  { id:"esp-20", cat:"especiais", type:"normal", icon:"fa-solid fa-book", xp:10,
+    name:"The Power of Books", desc:"Leia o sinal de energia de uma Chiseled Bookshelf com um comparador (Advancement oficial: adventure/read_power_of_chiseled_bookshelf)." },
+  { id:"esp-21", cat:"especiais", type:"normal", icon:"fa-solid fa-paintbrush", xp:12,
+    name:"Crafting a New Look", desc:"Crie uma armadura com trim em uma Smithing Table (Advancement oficial: adventure/trim_with_any_armor_pattern)." },
+  { id:"esp-22", cat:"especiais", type:"normal", icon:"fa-solid fa-hand-sparkles", xp:12,
+    name:"Oh Shiny", desc:"Distraia um Piglin com ouro (Advancement oficial: nether/distract_piglin)." },
+  { id:"esp-23", cat:"especiais", type:"normal", icon:"fa-solid fa-water", xp:10,
+    name:"Who is Cutting Onions?", desc:"Obtenha um bloco de Crying Obsidian (Advancement oficial: nether/obtain_crying_obsidian)." },
+  { id:"esp-24", cat:"especiais", type:"goal", icon:"fa-solid fa-fire-flame-curved", xp:18,
+    name:"Feels Like Home", desc:"Ande sobre lava no Overworld montado em um Strider por 50 blocos (Advancement oficial: nether/ride_strider_in_overworld_lava)." },
+  { id:"esp-25", cat:"especiais", type:"challenge", icon:"fa-solid fa-biohazard", xp:100,
+    name:"How Did We Get Here?", desc:"Tenha todos os efeitos de status ativos ao mesmo tempo — a conquista mais difícil do jogo (Advancement oficial: nether/all_effects)." },
+  { id:"esp-26", cat:"especiais", type:"challenge", icon:"fa-solid fa-otter", xp:20,
+    name:"Bukkit Bukkit", desc:"Capture um girino (tadpole) em um balde (Advancement oficial: husbandry/tadpole_in_a_bucket)." },
+  { id:"esp-27", cat:"especiais", type:"goal", icon:"fa-solid fa-fish-fins", xp:22,
+    name:"Tactical Fishing", desc:"Capture um peixe... sem usar uma vara de pescar (Advancement oficial: husbandry/tactical_fishing)." },
+  { id:"esp-28", cat:"especiais", type:"normal", icon:"fa-solid fa-otter", xp:14,
+    name:"Fishy Business", desc:"Capture um Axolotl em um balde (Advancement oficial: husbandry/axolotl_in_a_bucket)." },
+  { id:"esp-29", cat:"especiais", type:"normal", icon:"fa-solid fa-dove", xp:14,
+    name:"The Parrots and the Bats", desc:"Domestique dois morcegos... espera, alimente e domestique um papagaio com sementes (Advancement oficial: husbandry/tame_an_animal)." },
+  { id:"esp-30", cat:"especiais", type:"normal", icon:"fa-solid fa-shrimp", xp:12,
+    name:"Silk Touch Aquático", desc:"Colete uma esponja usando uma ferramenta com Silk Touch." },
+  { id:"esp-31", cat:"especiais", type:"goal", icon:"fa-solid fa-hippo", xp:22,
+    name:"Whatever Floats Your Goat!", desc:"Monte em uma cabra e a faça pular (Advancement oficial: husbandry/ride_a_boat_with_a_goat)." },
+  { id:"esp-32", cat:"especiais", type:"normal", icon:"fa-solid fa-dove", xp:14,
+    name:"A Complete Catalogue", desc:"Domestique todas as variantes de gato do jogo (Advancement oficial: husbandry/complete_catalogue)." },
+  { id:"esp-33", cat:"especiais", type:"goal", icon:"fa-solid fa-cookie", xp:24,
+    name:"You've Got a Friend in Me", desc:"Faça um Allay entregar um item para você usando um bloco de nota (Advancement oficial: husbandry/allay_deliver_item_to_player)." },
+  { id:"esp-34", cat:"especiais", type:"challenge", icon:"fa-solid fa-list-check", xp:100,
+    name:"Balanced Diet", desc:"Coma um item de cada tipo de comida existente no jogo (Advancement oficial: husbandry/balanced_diet)." },
+  { id:"esp-35", cat:"especiais", type:"challenge", icon:"fa-solid fa-paw", xp:100,
+    name:"Two by Two", desc:"Reproduza um casal de cada uma das espécies criáveis (Advancement oficial: husbandry/bred_all_animals)." },
+  { id:"esp-36", cat:"especiais", type:"challenge", icon:"fa-solid fa-earth-americas", xp:100,
+    name:"Adventuring Time", desc:"Visite todos os biomas do Overworld em uma única vida (Advancement oficial: adventure/adventuring_time)." },
+  { id:"esp-37", cat:"especiais", type:"challenge", icon:"fa-solid fa-user-shield", xp:100,
+    name:"Cover Me in Debris", desc:"Vista um conjunto completo de armadura de Netherite (Advancement oficial: nether/netherite_armor)." },
+  { id:"esp-38", cat:"especiais", type:"goal", icon:"fa-solid fa-hand-holding-heart", xp:26,
+    name:"Best Friends Forever", desc:"Domestique um lobo, gato ou cavalo e mantenha-o vivo por uma semana in-game." },
+  { id:"esp-39", cat:"especiais", type:"normal", icon:"fa-solid fa-comment-dots", xp:8,
+    name:"Smells Interesting", desc:"Tenha um Wolf Armor ou item exclusivo de olfato de lobo no inventário (Advancement oficial: husbandry/whiff_of_the_wild)." },
+  { id:"esp-40", cat:"especiais", type:"normal", icon:"fa-solid fa-plant-wilt", xp:10,
+    name:"Planting the Past", desc:"Plante uma semente rara encontrada em locais arqueológicos (Advancement oficial: husbandry/plant_any_sniffer_seed)." },
+];
+
+/* Metadados de nível/dificuldade para badges visuais (não interfere na lógica) */
+const TIER_LABELS = {
+  iniciante:"Iniciante",
+  intermediario:"Intermediário",
+  avancado:"Avançado",
+  especial:"Especial",
+};
+
+/* ==========================================================================
+   APP LOGIC — Diário do Aventureiro
+   - localStorage persistence (progresso + data/hora de conclusão)
+   - Renderização por categoria com filtros e busca
+   - Barras de progresso geral e por categoria
+   - Toasts de celebração + microanimações
+   - Reset individual / por categoria / total
+   - Dark/Light mode
+   ========================================================================== */
+
+(function(){
+  "use strict";
+
+  const STORAGE_KEY = "mc_achievements_progress_v1";
+  const THEME_KEY = "mc_achievements_theme_v1";
+
+  /* ---------- STATE ---------- */
+  let progress = loadProgress();     // { [achId]: { done:true, date: isoString } }
+  let activeCategory = "all";        // category id or "all"
+  let activeStatusFilter = "all";    // all | pending | done
+  let searchQuery = "";
+
+  /* ---------- STORAGE HELPERS ---------- */
+  function loadProgress(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    }catch(e){
+      console.error("Erro ao carregar progresso salvo:", e);
+      return {};
+    }
+  }
+
+  function saveProgress(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }catch(e){
+      console.error("Erro ao salvar progresso:", e);
+      showToast({title:"Erro ao salvar", text:"Não foi possível gravar o progresso no navegador.", icon:"fa-triangle-exclamation"});
+    }
+  }
+
+  function formatDate(iso){
+    if(!iso) return "";
+    const d = new Date(iso);
+    const dateStr = d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const timeStr = d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    return `${dateStr} às ${timeStr}`;
+  }
+
+  /* ---------- THEME ---------- */
+  function initTheme(){
+    const saved = localStorage.getItem(THEME_KEY);
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const theme = saved || (prefersLight ? "light" : "dark");
+    applyTheme(theme);
+  }
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    const icon = document.getElementById('themeIcon');
+    if(icon){
+      icon.className = theme === "dark" ? "fa-solid fa-moon" : "fa-solid fa-sun";
+    }
+    localStorage.setItem(THEME_KEY, theme);
+  }
+  function toggleTheme(){
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  /* ---------- DERIVED DATA HELPERS ---------- */
+  function isDone(id){ return !!(progress[id] && progress[id].done); }
+
+  function getCategoryStats(catId){
+    const items = ACHIEVEMENTS.filter(a => a.cat === catId);
+    const done = items.filter(a => isDone(a.id)).length;
+    return { done, total: items.length, pct: items.length ? Math.round((done/items.length)*100) : 0 };
+  }
+
+  function getOverallStats(){
+    const total = ACHIEVEMENTS.length;
+    const done = ACHIEVEMENTS.filter(a => isDone(a.id)).length;
+    const xp = ACHIEVEMENTS.filter(a => isDone(a.id)).reduce((sum,a)=> sum + (a.xp||0), 0);
+    const pct = total ? Math.round((done/total)*100) : 0;
+    return { total, done, pct, xp };
+  }
+
+  function matchesFilters(a){
+    if(activeCategory !== "all" && a.cat !== activeCategory) return false;
+    if(activeStatusFilter === "pending" && isDone(a.id)) return false;
+    if(activeStatusFilter === "done" && !isDone(a.id)) return false;
+    if(searchQuery){
+      const q = searchQuery.toLowerCase();
+      const hay = (a.name + " " + a.desc).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  /* ---------- RENDER: HERO STATS ---------- */
+  function renderHero(){
+    const s = getOverallStats();
+    document.getElementById('statDone').textContent = s.done;
+    document.getElementById('statTotal').textContent = s.total;
+    document.getElementById('statPercent').textContent = s.pct + "%";
+    document.getElementById('statXP').textContent = s.xp;
+    document.getElementById('xpbarPercentLabel').textContent = s.pct + "%";
+
+    const fill = document.getElementById('heroBarFill');
+    fill.style.width = s.pct + "%";
+    const wrap = document.getElementById('heroBarWrap');
+    wrap.setAttribute('aria-valuenow', String(s.pct));
+  }
+
+  /* ---------- RENDER: CATEGORY RAIL (hero sidebar) ---------- */
+  function renderCategoryRail(){
+    const rail = document.getElementById('categoryRail');
+    rail.innerHTML = CATEGORIES.map(cat => {
+      const stats = getCategoryStats(cat.id);
+      return `
+        <div class="rail-item" data-cat="${cat.id}" role="button" tabindex="0" aria-label="Ir para categoria ${escapeHtml(cat.name)}, ${stats.done} de ${stats.total} concluídos">
+          <div class="rail-ico" style="background:linear-gradient(145deg, ${cat.color}, ${shadeColor(cat.color,-25)})">
+            <i class="${cat.icon}" aria-hidden="true"></i>
+          </div>
+          <div class="rail-info">
+            <div class="name">${escapeHtml(cat.name)}</div>
+            <div class="count">${stats.done}/${stats.total} concluídos</div>
+            <div class="rail-bar"><span style="width:${stats.pct}%; background:${cat.color};"></span></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    rail.querySelectorAll('.rail-item').forEach(el => {
+      el.addEventListener('click', () => jumpToCategory(el.dataset.cat));
+      el.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); jumpToCategory(el.dataset.cat); }
+      });
+    });
+  }
+
+  function jumpToCategory(catId){
+    activeCategory = catId;
+    renderAll();
+    const target = document.getElementById('sec-' + catId);
+    if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }
+
+  /* ---------- RENDER: NAV TABS ---------- */
+  function renderNavTabs(){
+    const nav = document.getElementById('navTabs');
+    const allStats = getOverallStats();
+    let html = `
+      <button class="tab-btn ${activeCategory==='all' ? 'active':''}" data-cat="all" aria-pressed="${activeCategory==='all'}">
+        <i class="fa-solid fa-layer-group" aria-hidden="true"></i> Todas <span class="tab-badge">${allStats.done}/${allStats.total}</span>
+      </button>
+    `;
+    html += CATEGORIES.map(cat => {
+      const stats = getCategoryStats(cat.id);
+      return `
+        <button class="tab-btn ${activeCategory===cat.id ? 'active':''}" data-cat="${cat.id}" aria-pressed="${activeCategory===cat.id}">
+          <i class="${cat.icon}" aria-hidden="true"></i> ${escapeHtml(cat.name)} <span class="tab-badge">${stats.done}/${stats.total}</span>
+        </button>
+      `;
+    }).join("");
+    nav.innerHTML = html;
+
+    nav.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.cat;
+        renderAll();
+      });
+    });
+  }
+
+  /* ---------- RENDER: MAIN CONTENT (sections + cards) ---------- */
+  function renderContent(){
+    const root = document.getElementById('contentRoot');
+    const categoriesToShow = activeCategory === "all" ? CATEGORIES : CATEGORIES.filter(c => c.id === activeCategory);
+
+    let anyVisible = false;
+    let html = "";
+
+    categoriesToShow.forEach(cat => {
+      const items = ACHIEVEMENTS.filter(a => a.cat === cat.id && matchesFilters(a));
+      const allCatItems = ACHIEVEMENTS.filter(a => a.cat === cat.id);
+      if(items.length === 0) return;
+      anyVisible = true;
+      const stats = getCategoryStats(cat.id);
+
+      html += `
+        <section class="section-block" id="sec-${cat.id}" aria-labelledby="h-${cat.id}">
+          <div class="section-head">
+            <div class="section-titling">
+              <div class="section-ico" style="background:linear-gradient(145deg, ${cat.color}, ${shadeColor(cat.color,-25)})">
+                <i class="${cat.icon}" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h2 class="section-h2" id="h-${cat.id}">${escapeHtml(cat.name)}</h2>
+                <p class="section-p">${escapeHtml(cat.desc)}</p>
+              </div>
+            </div>
+            <div class="mini-progress">
+              <div class="bar"><span style="width:${stats.pct}%; background:${cat.color};"></span></div>
+              <span class="txt">${stats.done}/${allCatItems.length}</span>
+            </div>
+          </div>
+          <div class="ach-grid">
+            ${items.map(a => renderCard(a, cat)).join("")}
+          </div>
+        </section>
+      `;
+    });
+
+    if(!anyVisible){
+      html = `
+        <div class="empty-state">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <p>Nenhum objetivo encontrado com esses filtros. Tente ajustar a busca ou os filtros de status.</p>
+        </div>
+      `;
+    }
+
+    root.innerHTML = html;
+
+    // bind checkbox / card click
+    root.querySelectorAll('.ach-card').forEach(card => {
+      const id = card.dataset.id;
+      const checkBtn = card.querySelector('.ach-check');
+      checkBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleAchievement(id, card);
+      });
+      card.addEventListener('click', () => toggleAchievement(id, card));
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleAchievement(id, card); }
+      });
+    });
+  }
+
+  function renderCard(a, cat){
+    const done = isDone(a.id);
+    const dateStr = done ? formatDate(progress[a.id].date) : "";
+    const typeLabel = { normal:"Conquista", goal:"Meta", challenge:"Desafio" }[a.type] || "Conquista";
+
+    return `
+      <article class="ach-card ${done ? 'done':''}" data-frame="${a.type}" data-id="${a.id}" tabindex="0" role="checkbox" aria-checked="${done}" aria-label="${escapeHtml(a.name)}: ${escapeHtml(a.desc)}. ${done ? 'Concluído em ' + dateStr : 'Não concluído'}">
+        <div class="ach-icon" style="background:linear-gradient(145deg, ${cat.color}, ${shadeColor(cat.color,-25)})">
+          <i class="${a.icon}" aria-hidden="true"></i>
+        </div>
+        <div class="ach-body">
+          <div class="ach-top">
+            <h3 class="ach-name">${escapeHtml(a.name)}</h3>
+          </div>
+          <p class="ach-desc">${escapeHtml(a.desc)}</p>
+          <div class="ach-meta">
+            <span class="ach-type-tag ${a.type}">${typeLabel}</span>
+            <span class="ach-xp"><i class="fa-solid fa-bolt" aria-hidden="true"></i> ${a.xp} XP</span>
+            ${done ? `<span class="ach-date"><i class="fa-solid fa-clock" aria-hidden="true"></i> ${dateStr}</span>` : ""}
+          </div>
+        </div>
+        <button class="ach-check" aria-hidden="true" tabindex="-1">
+          <i class="fa-solid fa-check"></i>
+        </button>
+      </article>
+    `;
+  }
+
+  /* ---------- TOGGLE ACHIEVEMENT ---------- */
+  function toggleAchievement(id, cardEl){
+    const achievement = ACHIEVEMENTS.find(a => a.id === id);
+    if(!achievement) return;
+
+    const currentlyDone = isDone(id);
+
+    if(currentlyDone){
+      delete progress[id];
+    } else {
+      progress[id] = { done:true, date: new Date().toISOString() };
+    }
+    saveProgress();
+
+    if(!currentlyDone){
+      // celebration
+      cardEl.classList.add('celebrate');
+      spawnSparkles(cardEl);
+      showToast({
+        title: achievement.type === 'challenge' ? "DESAFIO CONCLUÍDO!" : achievement.type === 'goal' ? "META ALCANÇADA!" : "CONQUISTA OBTIDA!",
+        text: achievement.name,
+        icon: achievement.icon
+      });
+      setTimeout(()=> cardEl.classList.remove('celebrate'), 600);
+    }
+
+    renderAll(true);
+  }
+
+  function spawnSparkles(cardEl){
+    const rect = cardEl.getBoundingClientRect();
+    const count = 10;
+    for(let i=0;i<count;i++){
+      const s = document.createElement('span');
+      s.className = 'sparkle';
+      const angle = (Math.PI*2*i)/count + Math.random()*0.4;
+      const dist = 40 + Math.random()*30;
+      s.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
+      s.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
+      s.style.left = (rect.width/2) + 'px';
+      s.style.top = (rect.height/2) + 'px';
+      cardEl.appendChild(s);
+      s.addEventListener('animationend', () => s.remove());
+    }
+  }
+
+  /* ---------- TOASTS ---------- */
+  function showToast({title, text, icon}){
+    const stack = document.getElementById('toastStack');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML = `
+      <div class="toast-ico"><i class="${icon || 'fa-solid fa-star'}" aria-hidden="true"></i></div>
+      <div class="toast-text">
+        <div class="t1">${escapeHtml(title)}</div>
+        <div class="t2">${escapeHtml(text)}</div>
+      </div>
+    `;
+    stack.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('leaving');
+      toast.addEventListener('animationend', () => toast.remove(), {once:true});
+    }, 3600);
+  }
+
+  /* ---------- RESET LOGIC ---------- */
+  function openConfirmModal({title, message, confirmLabel, onConfirm}){
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.innerHTML = `
+      <div class="modal-card">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        <h3>${escapeHtml(title)}</h3>
+        <p>${escapeHtml(message)}</p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="modalCancel">Cancelar</button>
+          <button class="btn btn-danger" id="modalConfirm">${escapeHtml(confirmLabel)}</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const cancelBtn = overlay.querySelector('#modalCancel');
+    const confirmBtn = overlay.querySelector('#modalConfirm');
+
+    function close(){ overlay.remove(); document.removeEventListener('keydown', escHandler); }
+    function escHandler(e){ if(e.key === 'Escape') close(); }
+
+    cancelBtn.addEventListener('click', close);
+    confirmBtn.addEventListener('click', () => { onConfirm(); close(); });
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) close(); });
+    document.addEventListener('keydown', escHandler);
+    confirmBtn.focus();
+  }
+
+  function resetAll(){
+    openConfirmModal({
+      title:"Resetar todo o progresso?",
+      message:"Isso apagará permanentemente todas as conquistas marcadas em todas as categorias. Esta ação não pode ser desfeita.",
+      confirmLabel:"Sim, resetar tudo",
+      onConfirm: () => {
+        progress = {};
+        saveProgress();
+        renderAll();
+        showToast({title:"PROGRESSO RESETADO", text:"Todos os objetivos foram desmarcados.", icon:"fa-solid fa-rotate-left"});
+      }
+    });
+  }
+
+  function resetCategory(){
+    if(activeCategory === "all"){
+      showToast({title:"Selecione uma categoria", text:"Escolha uma aba específica para resetar.", icon:"fa-solid fa-circle-info"});
+      return;
+    }
+    const cat = CATEGORIES.find(c => c.id === activeCategory);
+    openConfirmModal({
+      title:`Resetar "${cat.name}"?`,
+      message:"Isso apagará o progresso apenas desta categoria. Esta ação não pode ser desfeita.",
+      confirmLabel:"Sim, resetar categoria",
+      onConfirm: () => {
+        ACHIEVEMENTS.filter(a => a.cat === activeCategory).forEach(a => delete progress[a.id]);
+        saveProgress();
+        renderAll();
+        showToast({title:"CATEGORIA RESETADA", text:cat.name, icon:"fa-solid fa-rotate-left"});
+      }
+    });
+  }
+
+  /* ---------- UTIL ---------- */
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function shadeColor(hex, percent){
+    hex = hex.replace('#','');
+    const num = parseInt(hex,16);
+    let r = (num >> 16) + Math.round(2.55*percent);
+    let g = ((num >> 8) & 0x00FF) + Math.round(2.55*percent);
+    let b = (num & 0x0000FF) + Math.round(2.55*percent);
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  /* ---------- MASTER RENDER ---------- */
+  function renderAll(skipRail){
+    renderHero();
+    if(!skipRail) renderCategoryRail();
+    else renderCategoryRail(); // keep rail always in sync (cheap enough)
+    renderNavTabs();
+    renderContent();
+  }
+
+  /* ---------- EVENT BINDINGS ---------- */
+  function bindEvents(){
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+    document.getElementById('resetCategoryBtn').addEventListener('click', resetCategory);
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value.trim();
+      renderContent();
+    });
+
+    document.getElementById('filterAll').addEventListener('click', () => setStatusFilter('all'));
+    document.getElementById('filterPending').addEventListener('click', () => setStatusFilter('pending'));
+    document.getElementById('filterDone').addEventListener('click', () => setStatusFilter('done'));
+  }
+
+  function setStatusFilter(f){
+    activeStatusFilter = f;
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      const isActive = chip.dataset.filter === f;
+      chip.classList.toggle('active', isActive);
+      chip.setAttribute('aria-pressed', String(isActive));
+    });
+    renderContent();
+  }
+
+  /* ---------- INIT ---------- */
+  function init(){
+    initTheme();
+    bindEvents();
+    renderAll();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+
+</script>
+</body>
+</html>
